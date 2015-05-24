@@ -24,6 +24,10 @@ train$relevance_variance = NULL
 # Combine train and test set for the dragons
 combi=rbind(train,test)
 
+
+# remove html tags
+combi$product_description <- gsub("<.*?>", "", combi$product_description)
+
 #-------------------------------------------------------------------------------------
 # Feature Engineering
 # Here be Dragons
@@ -34,7 +38,7 @@ all_text <- Corpus(VectorSource(combi$query))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.9999)
+dtm <- removeSparseTerms(dtm,0.999)
 df_q<-Matrix(as.matrix(dtm),sparse=T)
 df_q<-as.data.frame(as.matrix(dtm))
 colnames(df_q)=paste("q_",colnames(df_q),sep="")
@@ -43,7 +47,7 @@ all_text <- Corpus(VectorSource(combi$product_title))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.9999)
+dtm <- removeSparseTerms(dtm,0.999)
 df_pt<-Matrix(as.matrix(dtm),sparse=T)
 df_pt<-as.data.frame(as.matrix(dtm))
 colnames(df_pt)=paste("pt_",colnames(df_pt),sep="")
@@ -52,7 +56,7 @@ all_text <- Corpus(VectorSource(combi$product_description))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.9999)
+dtm <- removeSparseTerms(dtm,0.999)
 df_pd<-as.data.frame(as.matrix(dtm))
 colnames(df_pd)=paste("pd_",colnames(df_pd),sep="")
 
@@ -76,6 +80,15 @@ train = combi[1:10158,]
 test = combi[10159:32671,]
 
 rm(combi)
+
+# - use cross-validation to pick the cost parameter (default: 10-folds)
+#   > scaling leads to much better results??? w/out=38, w/
+#tune_svm <- e1071::tune.svm(relevance~., data=data.frame(as.matrix(train)), kernal="linear", gamma = 2^(-3:3), cost = 2^(-3:3))
+# - print the cross-validation errors for each model
+#summary(tune_svm)
+# - tune fxn stores the best model obtained
+#fit_svm_tune <- tune_svm$best.model
+#summary(fit_svm_tune)
 
 model <- svm(train,relevance, kernel="linear", cost=1)
 
