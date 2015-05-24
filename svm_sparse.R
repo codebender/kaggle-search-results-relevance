@@ -27,6 +27,7 @@ combi=rbind(train,test)
 
 # remove html tags
 combi$product_description <- gsub("<.*?>", "", combi$product_description)
+combi$product_description <- gsub("This translation tool is for your convenience only.*?Note: The accuracy and accessibility of the resulting translation is not guaranteed", "", combi$product_description)
 
 #-------------------------------------------------------------------------------------
 # Feature Engineering
@@ -64,12 +65,12 @@ colnames(df_pd)=paste("pd_",colnames(df_pd),sep="")
 combi=cbind(df_q,df_pt,df_pd)
 
 # Get rid of the garbage
-rm(df_q)
-rm(df_pt)
-rm(df_pd)
-rm(all_text)
-rm(corpus)
-rm(dtm)
+#rm(df_q)
+#rm(df_pt)
+#rm(df_pd)
+#rm(all_text)
+#rm(corpus)
+#rm(dtm)
 
 # Create sparse matrix
 combi<-Matrix(as.matrix(combi),sparse=T)
@@ -83,7 +84,8 @@ rm(combi)
 
 # - use cross-validation to pick the cost parameter (default: 10-folds)
 #   > scaling leads to much better results??? w/out=38, w/
-#tune_svm <- e1071::tune.svm(relevance~., data=data.frame(as.matrix(train)), kernal="linear", gamma = 2^(-3:3), cost = 2^(-3:3))
+df_train <- data.frame(as.matrix(train))
+tune_svm <- e1071::tune.svm(relevance~., data=df_train, kernal="linear", gamma = 2^(-1:1), cost = 2^(0:2))
 # - print the cross-validation errors for each model
 #summary(tune_svm)
 # - tune fxn stores the best model obtained
@@ -96,6 +98,6 @@ tpred = as.data.frame(ids)
 pred <- predict(model,test)
 tpred$prediction  <- pred
 colnames(tpred)=c("id","prediction")
-write.csv(tpred,"Output/svm_sparse_model_4.csv",row.names=F)
+write.csv(tpred,"Output/svm_sparse_model_5.csv",row.names=F)
 
 print("Everthing done and your coffee is cold")
