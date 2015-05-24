@@ -34,7 +34,7 @@ all_text <- Corpus(VectorSource(combi$query))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.999)
+dtm <- removeSparseTerms(dtm,0.9999)
 df_q<-Matrix(as.matrix(dtm),sparse=T)
 df_q<-as.data.frame(as.matrix(dtm))
 colnames(df_q)=paste("q_",colnames(df_q),sep="")
@@ -43,7 +43,7 @@ all_text <- Corpus(VectorSource(combi$product_title))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.999)
+dtm <- removeSparseTerms(dtm,0.9999)
 df_pt<-Matrix(as.matrix(dtm),sparse=T)
 df_pt<-as.data.frame(as.matrix(dtm))
 colnames(df_pt)=paste("pt_",colnames(df_pt),sep="")
@@ -52,7 +52,7 @@ all_text <- Corpus(VectorSource(combi$product_description))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.999)
+dtm <- removeSparseTerms(dtm,0.9999)
 df_pd<-as.data.frame(as.matrix(dtm))
 colnames(df_pd)=paste("pd_",colnames(df_pd),sep="")
 
@@ -83,6 +83,6 @@ tpred = as.data.frame(ids)
 pred <- predict(model,test)
 tpred$prediction  <- pred
 colnames(tpred)=c("id","prediction")
-write.csv(tpred,"Output/svm_sparse_model_3.csv",row.names=F)
+write.csv(tpred,"Output/svm_sparse_model_4.csv",row.names=F)
 
 print("Everthing done and your coffee is cold")
