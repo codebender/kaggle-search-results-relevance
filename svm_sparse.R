@@ -84,20 +84,20 @@ rm(combi)
 
 # - use cross-validation to pick the cost parameter (default: 10-folds)
 #   > scaling leads to much better results??? w/out=38, w/
-df_train <- data.frame(as.matrix(train))
-tune_svm <- e1071::tune.svm(relevance~., data=df_train, kernal="linear", gamma = 2^(-1:1), cost = 2^(0:2))
+#df_train <- data.frame()
+#tune_svm <- tune(svm, relevance~., data=as.matrix(train), kernal="linear", ranges=list(gamma = 2^(-1:1), cost = 2^(0:2)))
 # - print the cross-validation errors for each model
 #summary(tune_svm)
 # - tune fxn stores the best model obtained
 #fit_svm_tune <- tune_svm$best.model
 #summary(fit_svm_tune)
 
-model <- svm(train,relevance, kernel="linear", cost=1)
+model <- svm(train,relevance, kernel="linear", cost=.75)
 
 tpred = as.data.frame(ids)
 pred <- predict(model,test)
 tpred$prediction  <- pred
 colnames(tpred)=c("id","prediction")
-write.csv(tpred,"Output/svm_sparse_model_5.csv",row.names=F)
+write.csv(tpred,"Output/svm_sparse_model_6.csv",row.names=F)
 
 print("Everthing done and your coffee is cold")
