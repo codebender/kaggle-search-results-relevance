@@ -25,9 +25,16 @@ train$relevance_variance = NULL
 combi=rbind(train,test)
 
 
-# remove html tags
-combi$product_description <- gsub("<.*?>", "", combi$product_description)
-combi$product_description <- gsub("This translation tool is for your convenience only.*?Note: The accuracy and accessibility of the resulting translation is not guaranteed", "", combi$product_description)
+# clean up the data
+clean_data = function(string){
+  garbage = c("<.*?>", "http", "www","img","border","style","px","margin","left", "right","font","solid","This translation tool is for your convenience only.*?Note: The accuracy and accessibility of the resulting translation is not guaranteed")
+  for (i in 1:length(garbage)){
+    string = gsub(garbage[i], "", string)
+  }
+  return (string)
+}
+
+combi$product_description = lapply(combi$product_description,clean_data)
 
 #-------------------------------------------------------------------------------------
 # Feature Engineering
@@ -98,6 +105,6 @@ tpred = as.data.frame(ids)
 pred <- predict(model,test)
 tpred$prediction  <- pred
 colnames(tpred)=c("id","prediction")
-write.csv(tpred,"Output/svm_sparse_model_6.csv",row.names=F)
+write.csv(tpred,"Output/svm_sparse_model_7.csv",row.names=F)
 
 print("Everthing done and your coffee is cold")
