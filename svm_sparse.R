@@ -27,7 +27,18 @@ combi=rbind(train,test)
 
 # clean up the data
 clean_data = function(string){
-  garbage = c("<.*?>", "http", "www","img","border","style","px","margin","left", "right","font","solid","This translation tool is for your convenience only.*?Note: The accuracy and accessibility of the resulting translation is not guaranteed")
+  garbage = c("<.*?>", "http", "www",
+    "[.#@][a-zA-Z0-9_,. \\-\\s#,:>]*[\\s]*\\{.*?\\}",
+    "[a-zA-Z0-9_, \\s]*[\\s]*\\{.*?\\}",
+    "text-decoration:.*?;","text-align:.*?;",
+    "font-family:.*?;","font-size:.*?;","color:.*?;","margin:.*?;",
+    "padding:.*?;","width:.*?;","height:.*?;","display:.*?;","float:.*?;",
+    "font-weight:.*?;","list-style:.*?;","list-style-type:.*?;",
+    "border:.*?;",
+    "Seller assumes all responsibility for this listing.",
+    "Last updated on",
+    "html, body, div, span, applet, object,.*?HTML5 display-role reset for older browsers",
+    "This translation tool is for your convenience only.*?Note: The accuracy and accessibility of the resulting translation is not guaranteed")
   for (i in 1:length(garbage)){
     string = gsub(garbage[i], "", string)
   }
@@ -105,6 +116,6 @@ tpred = as.data.frame(ids)
 pred <- predict(model,test)
 tpred$prediction  <- pred
 colnames(tpred)=c("id","prediction")
-write.csv(tpred,"Output/svm_sparse_model_7.csv",row.names=F)
+write.csv(tpred,"Output/svm_sparse_model_8.csv",row.names=F)
 
 print("Everthing done and your coffee is cold")
