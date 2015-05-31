@@ -52,7 +52,6 @@ combi$product_description = lapply(combi$product_description,clean_data)
 # Here be Dragons
 
 # Create Vector Space Model for query, product_title and product_description
-corpus <- Corpus(VectorSource(combi$query))
 all_text <- Corpus(VectorSource(combi$query))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
@@ -75,7 +74,7 @@ all_text <- Corpus(VectorSource(combi$product_description))
 dtm<-DocumentTermMatrix(all_text,control=list(tolower=TRUE,removePunctuation=TRUE,
                                               removeNumbers=TRUE,stopwords=TRUE,
                                               stemming=TRUE,weighting=function(x) weightTfIdf(x,normalize=T)))
-dtm <- removeSparseTerms(dtm,0.999)
+dtm <- removeSparseTerms(dtm,0.9995)
 df_pd<-as.data.frame(as.matrix(dtm))
 colnames(df_pd)=paste("pd_",colnames(df_pd),sep="")
 
@@ -116,6 +115,6 @@ tpred = as.data.frame(ids)
 pred <- predict(model,test)
 tpred$prediction  <- pred
 colnames(tpred)=c("id","prediction")
-write.csv(tpred,"Output/svm_sparse_model_8.csv",row.names=F)
+write.csv(tpred,"Output/svm_sparse_model_9.csv",row.names=F)
 
 print("Everthing done and your coffee is cold")
